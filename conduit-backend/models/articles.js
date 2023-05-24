@@ -1,23 +1,36 @@
 const mongoose = require('mongoose')
-const Comment = require('../models/comments')
 
 const articleSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
   },
+  subtitle: {
+    type: String,
+    required: true,
+  },
+  userID: {
+    type: String,
+    required: true,
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'users',
+  },
   author: {
     type: String,
     required: true,
   },
-  bodyUrl: {
+  content: {
     type: String,
     required: true,
   },
-  tags: {
-    type: [String],
-    required: true,
-  },
+  tags: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'tags',
+    },
+  ],
   date: {
     type: Date,
     default: Date.now,
@@ -34,7 +47,7 @@ const articleSchema = new mongoose.Schema({
   comments: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Comment',
+      ref: 'comments',
     },
   ],
 })

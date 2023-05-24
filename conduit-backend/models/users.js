@@ -23,7 +23,9 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
+      required: function () {
+        return !this.googleId
+      },
       trim: true,
       minlength: 8,
       maxlength: 20,
@@ -39,7 +41,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       maxlength: 500,
     },
-    image: {
+    picture: {
       type: String,
       trim: true,
       maxlength: 255,
@@ -54,6 +56,12 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+    articles: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'articles',
+      },
+    ],
     history: {
       type: Array,
       default: [],
@@ -66,9 +74,11 @@ const userSchema = new mongoose.Schema(
 
 userSchema.pre('save', async function (next) {
   try {
-    const salt = await bcrypt.genSalt(10)
-    const hashedPassword = await bcrypt.hash(this.password, salt)
-    this.password = hashedPassword
+    if (this.password) {
+      const salt = await bcrypt.genSalt(10)
+      const hashedPassword = await bcrypt.hash(this.password, salt)
+      this.password = hashedPassword
+    }
     next()
   } catch (err) {
     next(err)
