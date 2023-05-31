@@ -5,7 +5,7 @@ const User = require('../models/users')
 const commentSchema = new mongoose.Schema({
   commenter: {
     type: Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'users',
     required: true,
   },
   content: {

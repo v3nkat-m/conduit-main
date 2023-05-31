@@ -154,8 +154,12 @@ function isAuthenticated(req, res, next) {
 }
 
 router.post('/logout', isAuthenticated, (req, res) => {
-  req.logout()
-  res.status(200).json({ message: 'Logged out successfully' })
+  req.logout(function (err) {
+    if (err) {
+      return next(err)
+    }
+    res.status(200).json({ message: 'Logged out successfully' })
+  })
 })
 
 router.post('/changepassword', async (req, res) => {
@@ -218,7 +222,17 @@ async function checkUserStatus(req, res, next) {
 }
 
 router.get('/userstatus', checkUserStatus, (req, res) => {
-  res.json({ isLoggedIn: res.locals.isLoggedIn, userRole: res.locals.userRole })
+  let response = {
+    isLoggedIn: res.locals.isLoggedIn,
+    userRole: res.locals.userRole,
+  }
+
+  if (res.locals.isLoggedIn) {
+    response.UserId = req.session.passport.user
+  }
+
+  res.json(response)
+  console.log(res.locals)
 })
 
 module.exports = router

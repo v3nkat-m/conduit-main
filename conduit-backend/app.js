@@ -11,7 +11,11 @@ const redirect = require('./middlewares/redirect.js')
 const authRouter = require('./routes/auth')
 const userRouter = require('./routes/users')
 const articleRouter = require('./routes/articles.js')
+const commentsRouter = require('./routes/comments.js')
+const tagsRouter = require('./routes/tags.js')
+const stripeRouter = require('./middlewares/stripe.js')
 require('./config/db')
+const algoliasync = require('./middlewares/algoliasync.js')
 
 app.use(
   cors({
@@ -46,7 +50,12 @@ app.use(flash())
 app.use('/auth', authRouter)
 app.use('/users', userRouter)
 app.use('/membership', paymentRouter)
+app.use('/comments', commentsRouter)
 app.use('/articles', articleRouter)
+app.use('/tags', tagsRouter)
+app.use('/stripe', stripeRouter)
+
+algoliasync()
 
 app.listen(3000, () => {
   console.log('Server is running on port 3000')

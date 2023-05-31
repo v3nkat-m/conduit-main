@@ -4,6 +4,7 @@ const User = require('../models/users')
 const multer = require('multer')
 const cloudinary = require('cloudinary').v2
 const fs = require('fs')
+const { error } = require('console')
 require('../config/cloudinary')
 // Multer configuration
 const storage = multer.diskStorage({
@@ -85,59 +86,132 @@ router.put(
   }
 )
 
-module.exports = router
+// Get user profile using article ID
+router.get(
+  '/profile/by-article/:articleId',
+  isAuthenticated,
+  async (req, res) => {
+    const { articleId } = req.params // Get the article's id from the parameters
 
-// Get a user by ID
-// router.get('/:userId', isAuthenticated, async (req, res) => {
-//   const { userId } = req.params
-//   try {
-//     const user = await User.findById(userId)
-//     if (!user) {
-//       return res.status(404).json({ message: 'User not found' })
-//     }
-//     return res.json(user)
-//   } catch (error) {
-//     console.error(error.message)
-//     return res.status(500).json({ message: 'Server error' })
-//   }
-// })
-// Get a user by ID
-// router.get('/:userId', isAuthenticated, async (req, res) => {
-//   const { userId } = req.params
-//   try {
-//     const user = await User.findById(userId)
-//     if (!user) {
-//       return res.status(404).json({ message: 'User not found' })
-//     }
-//     return res.json(user)
-//   } catch (error) {
-//     console.error(error.message)
-//     return res.status(500).json({ message: 'Server error' })
-//   }
-// })
+    try {
+      // Find the article
+      const article = await article.findById(articleId)
 
-// // Update a user by ID
-// router.put('/:userId', async (req, res) => {
-//   const { userId } = req.params
-//   const { name, email, password } = req.body
+      // If no article is found, return a 404 error
+      if (!article) {
+        return res.status(404).json({ message: 'Article not found' })
+      }
 
-//   try {
-//     let user = await User.findById(userId)
-//     if (!user) {
-//       return res.status(404).json({ message: 'User not found' })
-//     }
+      // Get the user ID from the article
+      const userId = article.user
 
-//     user.name = name || user.name
-//     user.email = email || user.email
-//     user.password = password || user.password
+      // Find the user by their ID
+      const user = await User.findById(userId)
 
-//     user = await user.save()
-//     return res.json(user)
-//   } catch (error) {
-//     console.error(error.message)
-//     return res.status(500).json({ message: 'Server error' })
-//   }
-// })
+      // If no user is found, return a 404 error
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' })
+      }
+
+      // If the user is found, return the user data
+      return res.json(user)
+    } catch (error) {
+      console.error(error.message)
+      return res.status(500).json({ message: 'Server error' })
+    }
+  }
+)
+
+router.get('/profile/:userId', async (req, res) => {
+  const { userId } = req.params // Get the user's id from the parameters
+
+  try {
+    // Find the user by their ID
+    const user = await User.findById(userId)
+
+    // If no user is found, return a 404 error
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+
+    // If the user is found, return the user data
+    return res.json(user)
+  } catch (error) {
+    console.error(error.message)
+    return res.status(500).json({ message: 'Server error' })
+  }
+})
+
+router.post('/follow', async (req, res) => {
+  const { followerId, followedId } = req.body
+
+  if (!followerId || !followedId) {
+    return res
+      .status(400)
+      .json({ message: 'Both followerId and followedId are required.' })
+  }
+
+  if (followerId === followedId) {
+    return res.status(400).json({ message: "Users can't follow themselves." })
+  }
+
+  try {
+    const follower = await User.findById(followerId)
+    const followed = await User.findById(followedId)
+
+    if (!follower || !followed) {
+      return res.status(404).json({ message: 'User not found.' })
+    }
+
+    // Add followedId to the follower's following list
+    if (!follower.followings.includes(followedId)) {
+      follower.followings.push(followedId)
+      await follower.save()
+    }
+
+    // Add followerId to the followed's followers list
+    if (!followed.followers.includes(followerId)) {
+      followed.followers.push(followerId)
+      await followed.save()
+    }
+
+    return res.status(200).json({ message: 'Follow operation successful.' })
+  } catch (error) {
+    console.error(error)
+    return res.status(500).json({ message: 'Server error.' })
+  }
+})
+
+router.get('/:userId/bookmarks', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId).populate('bookmarks')
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' })
+    }
+
+    res.json(user.bookmarks)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'Server error' })
+  }
+})
+
+router.get('/:id/followers', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id)
+    if (user) {
+      const followersCount = user.followers.length
+      const followingsCount = user.followings.length
+
+      res.json({ followersCount, followingsCount })
+    } else {
+      res.status(404).json({ message: 'User not found' })
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
+})
 
 // // Get list of followers for a user
 // router.get('/:userId/followers', isAuthenticated, async (req, res) => {
@@ -212,7 +286,9 @@ module.exports = router
 //     const userToUnfollow = await User.findById(userId)
 //     if (!userToUnfollow) {
 //       return res.status(404).json({ message: 'User not found' })
-//     }
+//     }}catch{
+//       res.send(error)
+//     })
 
 //     // Remove the user from the list of followed users
 //     user.following.pull(userToUnfollow._id)
@@ -231,5 +307,4 @@ module.exports = router
 // })
 
 // Update the current user's profile
-
 module.exports = router

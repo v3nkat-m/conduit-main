@@ -1,0 +1,67 @@
+require('./config/db')
+const tagsModel = require('./models/tags') // Replace with the path to your tags model file
+
+let predefinedTags = [
+  'Family',
+  'Health',
+  'Relationships',
+  'Sexuality',
+  'Home',
+  'Food',
+  'Pets',
+  'Mental Health',
+  'Productivity',
+  'Mindfulness',
+  'Business',
+  'Marketing',
+  'Leadership',
+  'Artificial Intelligence',
+  'Blockchain',
+  'Data Science',
+  'Gadgets',
+  'Makers',
+  'Security',
+  'Tech Companies',
+  'Design',
+  'Product Management',
+  'Programming',
+  'Programming Languages',
+  'Dev Ops',
+  'Operating Systems',
+  'Writing',
+  'Art',
+  'Gaming',
+  'Humor',
+  'Movies',
+  'Music',
+  'News',
+  'Photography',
+  'Podcasts',
+  'Television',
+  'Economics',
+  'Education',
+  'Equality',
+  'Finance',
+  'Law',
+  'Transportation',
+  'Politics',
+  'Race',
+  'Science',
+  'Mathematics',
+  'Drugs',
+  'Phiosophy',
+  'Religion',
+  'Fashion',
+  'Beauty',
+  'Language',
+  'Sports',
+  'Travel',
+  'Nature',
+] // Replace with your list of predefined tags
+
+predefinedTags.forEach(async tag => {
+  let newTag = new tagsModel({ name: tag, articles: [] })
+  await newTag.save() // Using async/await here to make sure each save operation is done before moving to the next.
+})
+
+console.log('Tags added successfully.')

@@ -62,10 +62,28 @@ const userSchema = new mongoose.Schema(
         ref: 'articles',
       },
     ],
+    bookmarks: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'articles',
+      },
+    ],
     history: {
       type: Array,
       default: [],
     },
+    followers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users',
+      },
+    ],
+    followings: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users',
+      },
+    ],
   },
   {
     timestamps: true,
