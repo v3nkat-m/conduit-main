@@ -136,11 +136,11 @@ router.get(
     if (req.user) {
       req.flash('error', 'You are already logged in')
       req.session.save(() => {
-        return res.redirect('http://localhost:3001/')
+        return res.redirect('https://conduit-706z.onrender.com/')
       })
     } else {
       req.session.save(() => {
-        return res.redirect('http://localhost:3001/')
+        return res.redirect('https://conduit-706z.onrender.com/')
       })
     }
   }

@@ -40,8 +40,8 @@ router.post('/create-checkout-session', async (req, res) => {
         },
       ],
       mode: 'payment',
-      success_url: 'http://localhost:3001/write',
-      cancel_url: 'http://localhost:3001/membership',
+      success_url: 'https://conduit-706z.onrender.com/write',
+      cancel_url: 'https://conduit-706z.onrender.com/membership',
       metadata: {
         userId: userId,
         sessionId: session.id,
