@@ -1,9 +1,8 @@
 const express = require('express')
-require('dotenv').config()
-
 const router = express.Router()
-const STRIPE_KEY = process.env.STRIPE_SECRET_KEY
-const stripe = require('stripe')(STRIPE_KEY)
+const stripe = require('stripe')(
+  'sk_test_51N5aXjSJiG7glEVuSnEp9X35JcAy2iRTzCXAdGVhDnLkOgrlA1RYXAdNUpluYXPlmLL7oarTCgMcfViFavgU46L800vjsTLvVv'
+)
 const Payment = require('../models/payments')
 const User = require('../models/users')
 
