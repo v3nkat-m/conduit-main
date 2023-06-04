@@ -5,19 +5,18 @@ const RedisStore = require('connect-redis').default
 const redis = require('redis')
 
 const redisClient = redis.createClient({
-  password: 'BKDNwuc80RfL5nzrdeMgibvvEcQgHufD',
+  password: process.env.REDIS_PASSWORD,
   socket: {
-    host: 'redis-16491.c212.ap-south-1-1.ec2.cloud.redislabs.com',
-    port: 16491,
+    host: process.env.REDIS_HOST,
+    port: process.env.REDIS_PORT,
   },
 })
-
 
 redisClient.on('connect', () => {
   console.log('Redis client connected')
 })
 
-redisClient.on('error', (err) => {
+redisClient.on('error', err => {
   console.error('Redis error:', err)
 })
 
@@ -29,13 +28,12 @@ redisClient.on('end', () => {
   console.log('Redis connection ended')
 })
 
-
 redisClient
   .connect()
   .then(() => {
     console.log('Connected to Redis')
   })
-  .catch((err) => {
+  .catch(err => {
     console.log(err.message)
   })
 

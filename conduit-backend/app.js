@@ -15,7 +15,10 @@ const commentsRouter = require('./routes/comments.js')
 const tagsRouter = require('./routes/tags.js')
 const stripeRouter = require('./middlewares/stripe.js')
 require('./config/db')
+
 const algoliasync = require('./middlewares/algoliasync.js')
+
+const PORT = process.env.PORT || 3000
 
 app.use(
   cors({
@@ -57,6 +60,6 @@ app.use('/stripe', stripeRouter)
 
 algoliasync()
 
-app.listen(3000, () => {
+app.listen(PORT, () => {
   console.log('Server is running on port 3000')
 })
