@@ -1,4 +1,5 @@
 const algoliasearch = require('algoliasearch')
+require('dotenv').config()
 
 const applicationId = process.env.APP_ID
 const adminApiKey = process.env.ALGOLIA_ADMIN
