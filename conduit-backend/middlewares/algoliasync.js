@@ -1,7 +1,5 @@
 const algoliasearch = require('algoliasearch')
 const ArticleModel = require('../models/articles')
-require('dotenv').config()
-
 const TagModel = require('../models/tags')
 const UserModel = require('../models/users')
 const config = require('../config/algolia')

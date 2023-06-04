@@ -1,8 +1,7 @@
 const algoliasearch = require('algoliasearch')
-require('dotenv').config()
 
-const applicationId = process.env.APP_ID
-const adminApiKey = process.env.ALGOLIA_ADMIN
+const applicationId = '8APD5KW0T3'
+const adminApiKey = '69ce15f8dece56ec6d671913fe5e15b2'
 const algoliaClient = algoliasearch(applicationId, adminApiKey)
 const algoliaIndex = algoliaClient.initIndex('articles')
 module.exports = {
