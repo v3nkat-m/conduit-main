@@ -8,15 +8,15 @@ const User = require('../models/users')
 
 router.post('/create-checkout-session', async (req, res) => {
   const { userId, userEmail } = req.body
-  console.log('userId', userId)
-  console.log('req.body', req.body)
+  // console.log('userId', userId)
+  // console.log('req.body', req.body)
 
   try {
-    console.log(userId)
+    // console.log(userId)
     const user = await User.findById(userId)
-    console.log('user stripe', user)
+    // console.log('user stripe', user)
     if (!user) {
-      console.log('user not found:', user)
+      // console.log('user not found:', user)
       return res.status(404).json({ message: 'User not found' })
     }
     if (user.userRole === 2) {
@@ -47,7 +47,7 @@ router.post('/create-checkout-session', async (req, res) => {
         sessionId: session.id,
       },
     })
-    console.log('session=================', session)
+    // console.log('session=================', session)
     res.status(200).json({ sessionId: session.id })
   } catch (error) {
     res.status(500).json({ message: 'Error creating checkout session', error })
@@ -56,19 +56,19 @@ router.post('/create-checkout-session', async (req, res) => {
 
 router.post('/payment-webhook', async (req, res) => {
   const event = req.body
-  console.log('event\\\\\\\\\\\\\\\\', event)
-  console.log('event.type\\\\\\', event.type)
-  console.log('Metadata---------', event.data.object)
+  // console.log('event\\\\\\\\\\\\\\\\', event)
+  // console.log('event.type\\\\\\', event.type)
+  // console.log('Metadata---------', event.data.object)
 
   try {
     if (event.type === 'checkout.session.completed') {
       const paymentIntent = event.data.object
-      console.log('payment.intent', paymentIntent)
+      // console.log('payment.intent', paymentIntent)
       const sessionId = paymentIntent.metadata.sessionId
 
       const userId = paymentIntent.metadata.userId
       const user = await User.findById(userId)
-      console.log('user stripe', user)
+      // console.log('user stripe', user)
       user.userRole = 2
       await user.save()
 

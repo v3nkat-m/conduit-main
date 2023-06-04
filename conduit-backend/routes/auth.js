@@ -46,7 +46,7 @@ router.post('/login', function (req, res, next) {
       if (err) {
         return next(err)
       }
-      console.log(req.session)
+      // console.log(req.session)
       return res.json({ message: 'Logged in successfully' })
     })
   })(req, res, next)
@@ -82,7 +82,7 @@ router.post('/signup', async (req, res, next) => {
     await newUser.save()
     res.status(201).json({ message: 'User created successfully' })
   } catch (err) {
-    console.log(err)
+    // console.log(err)
     res.status(500).json({
       message:
         'Check email and password(password should be greater than 8 characters and have at least one symbol,number,capitalcase and lowercase letter)',
@@ -101,7 +101,7 @@ passport.use(
     async function (req, accessToken, refreshToken, profile, cb) {
       const email = profile.emails[0].value
       const existingUser = await User.findOne({ email: email })
-      console.log('user session', req.session)
+      // console.log('user session', req.session)
       if (existingUser) {
         existingUser.googleId = profile.id
         await existingUser.save()
@@ -111,7 +111,7 @@ passport.use(
           email: email,
           googleId: profile.id,
         })
-        console.log('new user:', newUser)
+        // console.log('new user:', newUser)
         await newUser.save()
         return cb(null, newUser)
       }
@@ -131,16 +131,16 @@ router.get(
     failureFlash: true,
   }),
   async function (req, res) {
-    console.log('google callback, req.user:', req.user)
-    console.log('google callback, req.session:', req.session)
+    // console.log('google callback, req.user:', req.user)
+    // console.log('google callback, req.session:', req.session)
     if (req.user) {
       req.flash('error', 'You are already logged in')
       req.session.save(() => {
-        return res.redirect('http://localhost:3001/membership')
+        return res.redirect('http://localhost:3001/')
       })
     } else {
       req.session.save(() => {
-        return res.redirect('http://localhost:3001/membership')
+        return res.redirect('http://localhost:3001/')
       })
     }
   }
@@ -195,15 +195,15 @@ router.post('/changepassword', async (req, res) => {
 })
 
 async function checkUserStatus(req, res, next) {
-  console.log('Session data in Redis:', req.sessionID)
+  // console.log('Session data in Redis:', req.sessionID)
 
-  console.log('req.session:', req.session)
-  console.log('req.isAuthenticated():', req.isAuthenticated())
+  // console.log('req.session:', req.session)
+  // console.log('req.isAuthenticated():', req.isAuthenticated())
 
   if (req.isAuthenticated()) {
     try {
       const user = await User.findById(req.session.passport.user)
-      console.log('user:', user)
+      // console.log('user:', user)
       if (user) {
         res.locals.isLoggedIn = true
         res.locals.userRole = user.userRole
@@ -217,7 +217,7 @@ async function checkUserStatus(req, res, next) {
   } else {
     res.locals.isLoggedIn = false
   }
-  console.log('res.locals', res.locals)
+  // console.log('res.locals', res.locals)
   next()
 }
 
@@ -232,7 +232,7 @@ router.get('/userstatus', checkUserStatus, (req, res) => {
   }
 
   res.json(response)
-  console.log(res.locals)
+  // console.log(res.locals)
 })
 
 module.exports = router

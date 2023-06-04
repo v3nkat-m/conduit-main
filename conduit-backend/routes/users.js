@@ -182,6 +182,54 @@ router.post('/follow', async (req, res) => {
   }
 })
 
+router.post('/unfollow', async (req, res) => {
+  const { followerId, followedId } = req.body
+  // console.log(followerId, followedId)
+
+  if (!followerId || !followedId) {
+    return res
+      .status(400)
+      .json({ message: 'Both followerId and followedId are required.' })
+  }
+
+  if (followerId === followedId) {
+    return res.status(400).json({ message: "Users can't unfollow themselves." })
+  }
+
+  try {
+    const follower = await User.findById(followerId)
+    const followed = await User.findById(followedId)
+    // console.log('follower:', follower)
+    // console.log('followed:', followed)
+
+    if (!follower || !followed) {
+      return res.status(404).json({ message: 'User not found.' })
+    }
+
+    // Remove followedId from the follower's following list
+    if (follower.followings.map(id => id.toString()).includes(followedId)) {
+      follower.followings = follower.followings.filter(
+        id => id.toString() !== followedId
+      )
+      await follower.save()
+    }
+    // console.log('follower after removing followed:', follower)
+    // Remove followerId from the followed's followers list
+    if (followed.followers.map(id => id.toString()).includes(followerId)) {
+      followed.followers = followed.followers.filter(
+        id => id.toString() !== followerId
+      )
+      await followed.save()
+    }
+    // console.log('followed after removing follower:', followed)
+
+    return res.status(200).json({ message: 'Unfollow operation successful.' })
+  } catch (error) {
+    console.error(error)
+    return res.status(500).json({ message: 'Server error.' })
+  }
+})
+
 router.get('/:userId/bookmarks', async (req, res) => {
   try {
     const user = await User.findById(req.params.userId).populate('bookmarks')

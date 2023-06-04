@@ -109,7 +109,7 @@ router.post('/uploadImage', upload.single('image'), async (req, res) => {
       imageUrl: result.secure_url,
     })
   } catch (error) {
-    console.log('Upload image error: ', error)
+    // console.log('Upload image error: ', error)
     res.status(500).send('Failed to upload image')
   }
 })
@@ -126,7 +126,7 @@ router.get('/user/:id', async (req, res) => {
 
 router.get('/article/:id', async (req, res) => {
   try {
-    const article = await Article.findById(req.params.id)
+    const article = await Article.findById(req.params.id).populate('user')
     if (!article) {
       return res.status(404).json({ message: 'Article not found' })
     }
@@ -152,14 +152,36 @@ router.get('/allarticles', async (req, res) => {
 })
 router.get('/comments/:id', async (req, res) => {
   try {
-    const article = await Article.findById(req.params.id).populate({
-      path: 'comments',
-      populate: {
-        path: 'commenter',
-        model: 'users',
+    const article = await Article.findById(req.params.id).populate([
+      {
+        path: 'comments',
+        populate: {
+          path: 'commenter',
+          model: 'users',
+          select: 'name picture',
+        },
       },
-    })
-    res.json(article.comments)
+      {
+        path: 'comments',
+        populate: {
+          path: 'replies',
+          populate: {
+            path: 'commenter',
+            model: 'users',
+            select: 'name picture',
+          },
+        },
+      },
+    ])
+
+    // console.log(article)
+    // console.log(article.comments)
+
+    const topLevelComments = article.comments.filter(
+      comment => !comment.parentComment
+    )
+
+    res.json(topLevelComments)
   } catch (err) {
     console.error(err)
     res.status(500).json({ message: err.message })
@@ -218,9 +240,9 @@ router.put('/editarticle/:id', async (req, res) => {
 
 router.delete('/deletearticle/:id', async (req, res) => {
   try {
-    console.log('Deleting article with id:', req.params.id)
+    // console.log('Deleting article with id:', req.params.id)
     let article = await Article.findById(req.params.id)
-    console.log('Found article:', article)
+    // console.log('Found article:', article)
 
     if (!article) {
       return res.status(404).send('No such article found')
@@ -240,7 +262,7 @@ router.delete('/deletearticle/:id', async (req, res) => {
       await user.save()
     }
 
-    console.log('Deleting article...')
+    // console.log('Deleting article...')
     await Article.findByIdAndDelete(req.params.id)
 
     res.json({ message: 'Article deleted successfully' })
@@ -366,7 +388,7 @@ router.put('/unlike/:articleId', async (req, res) => {
 
 router.get('/search', async (req, res) => {
   const searchTerm = req.query.q
-  console.log(searchTerm)
+  // console.log(searchTerm)
   try {
     const { hits } = await algoliaIndex.search(searchTerm)
     res.json(hits)
@@ -376,4 +398,19 @@ router.get('/search', async (req, res) => {
   }
 })
 
+router.post('/bookmarkedarticles', async (req, res) => {
+  try {
+    const ids = req.body.ids // Array of article IDs sent in request
+    // console.log('ids', ids)
+    const articles = await Article.find({
+      _id: { $in: ids },
+    }).populate('user')
+    // console.log('articles]][[[', articles)
+
+    res.json(articles)
+  } catch (error) {
+    console.error('Error fetching bookmarked articles:', error)
+    res.status(500).json({ message: error.message })
+  }
+})
 module.exports = router
