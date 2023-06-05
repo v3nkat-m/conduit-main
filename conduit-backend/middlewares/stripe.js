@@ -40,8 +40,8 @@ router.post('/create-checkout-session', async (req, res) => {
         },
       ],
       mode: 'payment',
-      success_url: 'https://conduit-ui.vercel.app/write',
-      cancel_url: 'https://conduit-ui.vercel.app/membership',
+      success_url: 'https://coral-app-nkibc.ondigitalocean.app/write',
+      cancel_url: 'https://coral-app-nkibc.ondigitalocean.app/membership',
       metadata: {
         userId: userId,
         sessionId: session.id,

@@ -22,7 +22,7 @@ const PORT = process.env.PORT || 3000
 
 app.use(
   cors({
-    origin: 'https://conduit-ui.vercel.app/',
+    origin: 'https://coral-app-nkibc.ondigitalocean.app/',
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
