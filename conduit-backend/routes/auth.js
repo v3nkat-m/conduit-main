@@ -136,11 +136,11 @@ router.get(
     if (req.user) {
       req.flash('error', 'You are already logged in')
       req.session.save(() => {
-        return res.redirect('https://conduit-706z.onrender.com')
+        return res.redirect('https://conduit-ui.vercel.app/')
       })
     } else {
       req.session.save(() => {
-        return res.redirect('https://conduit-706z.onrender.com')
+        return res.redirect('https://conduit-ui.vercel.app/')
       })
     }
   }
