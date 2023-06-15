@@ -40,8 +40,9 @@ router.post('/create-checkout-session', async (req, res) => {
         },
       ],
       mode: 'payment',
-      success_url: 'https://conduit-backend-2.onrender.com/write',
-      cancel_url: 'https://conduit-backend-2.onrender.com/membership',
+      success_url: 'https://main--inquisitive-cocada-92d34c.netlify.app/write',
+      cancel_url:
+        'https://main--inquisitive-cocada-92d34c.netlify.app/membership',
       metadata: {
         userId: userId,
         sessionId: session.id,
