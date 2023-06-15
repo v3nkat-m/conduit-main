@@ -136,11 +136,15 @@ router.get(
     if (req.user) {
       req.flash('error', 'You are already logged in')
       req.session.save(() => {
-        return res.redirect('https://conduit-backend-2.onrender.com/')
+        return res.redirect(
+          'https://main--inquisitive-cocada-92d34c.netlify.app'
+        )
       })
     } else {
       req.session.save(() => {
-        return res.redirect('https://conduit-backend-2.onrender.com/')
+        return res.redirect(
+          'https://main--inquisitive-cocada-92d34c.netlify.app'
+        )
       })
     }
   }
