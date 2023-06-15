@@ -136,11 +136,11 @@ router.get(
     if (req.user) {
       req.flash('error', 'You are already logged in')
       req.session.save(() => {
-        return res.redirect('https://coral-app-nkibc.ondigitalocean.app/')
+        return res.redirect('https://conduit-backend-2.onrender.com/')
       })
     } else {
       req.session.save(() => {
-        return res.redirect('https://coral-app-nkibc.ondigitalocean.app/')
+        return res.redirect('https://conduit-backend-2.onrender.com/')
       })
     }
   }

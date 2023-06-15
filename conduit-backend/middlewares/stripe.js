@@ -40,8 +40,8 @@ router.post('/create-checkout-session', async (req, res) => {
         },
       ],
       mode: 'payment',
-      success_url: 'https://coral-app-nkibc.ondigitalocean.app/write',
-      cancel_url: 'https://coral-app-nkibc.ondigitalocean.app/membership',
+      success_url: 'https://conduit-backend-2.onrender.com/write',
+      cancel_url: 'https://conduit-backend-2.onrender.com/membership',
       metadata: {
         userId: userId,
         sessionId: session.id,
