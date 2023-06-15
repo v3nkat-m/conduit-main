@@ -42,7 +42,7 @@ app.use(
       sameSite: 'lax',
       httpOnly: true,
       maxAge: 600000,
-      domain: 'https://main--inquisitive-cocada-92d34c.netlify.app',
+      domain: 'main--inquisitive-cocada-92d34c.netlify.app',
     },
     proxy: true,
   })
