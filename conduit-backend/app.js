@@ -39,7 +39,7 @@ app.use(
     store: sessionStore,
     cookie: {
       secure: process.env.NODE_ENV !== 'development',
-      sameSite: 'lax',
+      sameSite: 'none',
       httpOnly: true,
       maxAge: 600000,
       domain: 'main--inquisitive-cocada-92d34c.netlify.app',
