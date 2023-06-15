@@ -38,10 +38,11 @@ app.use(
     saveUninitialized: false,
     store: sessionStore,
     cookie: {
-      secure: process.env.NODE_ENV === 'production', // Set to 'true' only in production
+      secure: process.env.NODE_ENV !== 'development',
       sameSite: 'lax',
       httpOnly: true,
       maxAge: 600000,
+      domain: 'https://main--inquisitive-cocada-92d34c.netlify.app',
     },
     proxy: true,
   })
